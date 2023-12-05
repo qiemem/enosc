@@ -13,7 +13,7 @@ const f kPotDeadZone = 0.01_f;
 const f kPitchPotRange = 6_f * 12_f;
 const f kRootPotRange = 9_f * 12_f;
 const f kNewNoteRange = 6_f * 12_f;
-const f kFineTuneRange = 4_f;
+const f kFineTuneRange = 12_f;
 const f kSpreadRange = 12_f;
 const f kCalibration2Volts = 2_f;
 const f kCalibration4Volts = 4_f;
@@ -580,7 +580,9 @@ public:
     // PITCH
     { auto [pitch, fine_tune] = pitch_pot_.Process(put);
       pitch *= kPitchPotRange;                               // 0..range
+      pitch = ((pitch + 6_f) / 12_f).integral() * 12_f; // round to octave
       pitch -= kPitchPotRange * 0.5_f;                       // -range/2..range/2
+
       f pitch_cv = pitch_cv_.last();
 
       if (pitch_cv_.calibration_busy()) {
